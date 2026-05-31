@@ -1,0 +1,50 @@
+name: Rust Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # 1. نصب Node.js برای بیلد فرانت‌‌اند
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    # 2. بیلد کردن فرانت‌‌اند
+    - name: Build Frontend
+      run: |
+        cd frontend
+        npm install
+        npm run build
+        cd ..
+
+    # 3. نصب وابستگی‌های سیستم برای GStreamer
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y pkg-config libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+        gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
+        gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-pipewire gstreamer1.0-vaapi ffmpeg
+
+    # 4. بیلد کردن پروژه Rust
+    - name: Build Backend
+      run: cargo build --release
+
+    # 5. آپلود فایل اجرایی
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: RustScreenRecorder
+        path: target/release/RustScreenRecorder
