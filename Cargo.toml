@@ -1,0 +1,27 @@
+[package]
+name = "RustScreenRecorder"
+version = "0.1.0"
+edition = "2024"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+ashpd = { version = "0.13", features = ["screencast"] }
+gstreamer = "0.25"
+axum = "0.7"
+tower-http = { version = "0.5", features = ["cors", "fs"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+rust-embed = "8.4"
+mime_guess = "2.0"
+rfd = "0.14"
+gst-plugin-togglerecord = "0.15.0"
+gstreamer-app = "0.25.2"
+bytes = "1.11.1"
+async-stream = "0.3.6"
